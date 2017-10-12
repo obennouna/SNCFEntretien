@@ -1,0 +1,15 @@
+.gradle
+/local.properties
+.idea
+.DS_Store
+/gradle
+build
+/captures
+SNCFFusion/gen
+atlassian-ide-plugin.xml
+**/crashlytics-build.properties
+SNCFFusion/target
+ser
+*.iml
+local.properties
+*.log
