@@ -76,6 +76,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainHolder> {
         public void onClick(View v) {
             Intent intent = new Intent(activity, MainWebViewActivity.class);
             intent.putExtra("URL", data.html_url);
+            intent.putExtra("TITLE", data.name);
             activity.startActivity(intent);
         }
     }
