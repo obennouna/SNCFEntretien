@@ -6,9 +6,11 @@ Sujets d'attention :
     - Tests unitaires
     - Architecture
 - `Main`
+    - Nommage de la classe
     - Noms d'attributs
 - `MainActivity`
     - Appel d'une `AsyncTask` non statique
+    - Appel de l'API quand on revient de `MainWebViewActivity`
 - `MainAdapter`
     - Référence vers l'activité
     - Déclaration de `MainHolder` en classe non statique
@@ -18,6 +20,7 @@ Sujets d'attention :
     - URL en dur
     - Gestion d'erreur
     - Utilisation de `HttpURLConnection`
+    - Alternatives possible aux `AsyncTask`
 - `MainWebViewActivity`
     - Constantes en dur
     - Dialogue d'attente pendant le chargement
