@@ -3,10 +3,8 @@
 Sujets d'attention :
 
 - Général
-    - Design patterns
     - Tests unitaires
     - Architecture
-    - Dépot (GIT, Bitbucket ..)
 - `Main`
     - Nommage de la classe
     - Noms d'attributs
