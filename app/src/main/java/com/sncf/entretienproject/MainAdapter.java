@@ -1,16 +1,13 @@
 package com.sncf.entretienproject;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 /**
@@ -18,66 +15,72 @@ import java.util.ArrayList;
  */
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainHolder> {
-
-    private AppCompatActivity activity;
-    private ArrayList<Main.MainItems> mData;
-
-    MainAdapter(AppCompatActivity context) {
-        activity = context;
+    
+    private ArrayList<MainItem> mData;
+    
+    private boolean mFirstItemCreated;
+    
+    private ValueAnimator mAnimation;
+    
+    MainAdapter() {
         mData = new ArrayList<>();
+        
+        for (int i = 0; i < 100; i++) {
+            mData.add(new MainItem(String.valueOf(i)));
+        }
     }
-
-    public void setData(ArrayList<Main.MainItems> data) {
-        this.mData = data;
-        notifyDataSetChanged();
-    }
-
+    
     @Override
     public MainAdapter.MainHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new MainAdapter.MainHolder(LayoutInflater.from(activity).inflate(R.layout.item_main, parent, false));
+        if (!mFirstItemCreated) {
+            mFirstItemCreated = true;
+            
+            mAnimation = ValueAnimator.ofInt(0, 100);
+            mAnimation.setDuration(5_000L);
+            mAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+            mAnimation.start();
+        }
+        
+        return new MainAdapter.MainHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_main, parent, false));
     }
-
+    
     @Override
     public void onBindViewHolder(MainAdapter.MainHolder holder, int position) {
-        holder.setData(mData.get(position));
+        holder.bind(mData.get(position).getId());
+        
+        mAnimation.addUpdateListener(holder);
     }
-
+    
+    @Override
+    public void onViewRecycled(MainHolder holder) {
+        super.onViewRecycled(holder);
+        
+        mAnimation.removeUpdateListener(holder);
+    }
+    
     @Override
     public int getItemCount() {
         return mData.size();
     }
-
-    class MainHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private Main.MainItems data;
+    
+    class MainHolder extends RecyclerView.ViewHolder implements AnimatorUpdateListener {
+        
         private TextView title;
         private TextView description;
-        private ImageView img;
-
+        
         MainHolder(View itemView) {
             super(itemView);
-            title = (TextView) itemView.findViewById(R.id.main_title);
-            description = (TextView) itemView.findViewById(R.id.main_description);
-            img = (ImageView) itemView.findViewById(R.id.main_img);
-            itemView.setOnClickListener(this);
+            title = itemView.findViewById(R.id.main_title);
+            description = itemView.findViewById(R.id.main_description);
         }
-
-        public void setData(Main.MainItems data) {
-            this.data = data;
-            title.setText(data.name);
-            description.setText(data.description);
-            Picasso.with(activity)
-                    .load(data.owner.avatar_url)
-                    .fit()
-                    .into(img);
+        
+        void bind(String id) {
+            description.setText(id);
         }
-
+    
         @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(activity, MainWebViewActivity.class);
-            intent.putExtra("URL", data.html_url);
-            intent.putExtra("TITLE", data.name);
-            activity.startActivity(intent);
+        public void onAnimationUpdate(ValueAnimator animation) {
+            title.setText(String.valueOf((int) animation.getAnimatedValue()));
         }
     }
 }
